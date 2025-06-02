@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Widgets</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #e0eafc, #cfdef3);
+        color: #333;
+      }
+      .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 40px;
+        gap: 20px;
+      }
+      .column {
+        flex: 1;
+        padding: 20px;
+        text-align: left;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ffffff, #f9f9f9);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .column:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      }
+      .container {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px;
+        gap: 10px;
+      }
+      .column {
+        flex: 1;
+        padding: 20px;
+        text-align: left
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .column:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+      }
+      .column br {
+        margin-bottom: 40px; /* Further increase spacing between headings and options */
+      }
+      a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="column">
+        Ephemeral/Other<br />
+        <ul><a href="">Channel widget</a></ul>
+        <ul><a href="">Video widget</a></ul>
+      </div>
+      <div class="column">
+        TST<br />
+        <ul><a href="tst-channel-widget.html">Channel widget</a></ul>
+        <ul><a href="tst-video-widget.html">Video widget</a></ul>
+      </div>
+      <div class="column">
+        STG<br />
+        <ul><a href="stg-channel-widget.html">Channel widget</a></ul>
+      </div>
+      <div class="column">
+        Production<br />
+        <ul><a href="prod-petes-widget.html">Pete's widget</a></ul>
+      </div>
+    </div>
+  </body>
+</html>
