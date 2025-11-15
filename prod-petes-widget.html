@@ -4,20 +4,108 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pete's widget</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px 40px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      header h1 {
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      header p {
+        margin-top: 5px;
+        opacity: 0.9;
+        font-size: 14px;
+      }
+
+      main {
+        flex: 1;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+
+      .widget-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+
+      footer {
+        background: #2d3748;
+        color: white;
+        padding: 30px 40px;
+        text-align: center;
+      }
+
+      footer p {
+        margin-bottom: 10px;
+      }
+
+      footer a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
-    <!-- WIDGET -->
-    <iframe
-      id="recast-widget-0064db6d-d0d6-121c-fbaa-77e632f21a94"
-      src="https://embedded.recast.tv/8eml8/0064db6d-d0d6-121c-fbaa-77e632f21a94"
-      width="100%"
-      allow="fullscreen;encrypted-media;picture-in-picture;"
-      style="border: none; overflow: hidden"
-    ></iframe>
-    <script
-      defer
-      src="https://embedded.recast.tv/iframe/resizer.js"
-      iframe-id="recast-widget-0064db6d-d0d6-121c-fbaa-77e632f21a94"
-    ></script>
+    <!-- HEADER BANNER -->
+    <header>
+      <h1>Pete's Widget</h1>
+      <p>Watch live streams and on-demand content</p>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <div class="widget-container">
+        <!-- WIDGET -->
+        <iframe
+          id="recast-widget-0064db6d-d0d6-121c-fbaa-77e632f21a94"
+          src="https://embedded.recast.tv/8eml8/0064db6d-d0d6-121c-fbaa-77e632f21a94"
+          width="100%"
+          allow="fullscreen;encrypted-media;picture-in-picture;"
+          style="border: none; overflow: hidden"
+        ></iframe>
+        <script
+          defer
+          src="https://embedded.recast.tv/iframe/resizer.js"
+          iframe-id="recast-widget-0064db6d-d0d6-121c-fbaa-77e632f21a94"
+        ></script>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>&copy; 2024 Pete's Widget. All rights reserved.</p>
+      <p>
+        <a href="#">Privacy Policy</a> | 
+        <a href="#">Terms of Service</a> | 
+        <a href="#">Contact</a>
+      </p>
+    </footer>
   </body>
 </html>
