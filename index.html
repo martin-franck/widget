@@ -15,26 +15,6 @@
       .container {
         display: flex;
         justify-content: space-between;
-        margin: 40px;
-        gap: 20px;
-      }
-      .column {
-        flex: 1;
-        padding: 20px;
-        text-align: left;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #ffffff, #f9f9f9);
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s, box-shadow 0.3s;
-      }
-      .column:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-      }
-      .container {
-        display: flex;
-        justify-content: space-between;
         margin: 20px;
         gap: 10px;
       }
@@ -63,18 +43,28 @@
       a:hover {
         text-decoration: underline;
       }
+      @media (max-width: 768px) {
+        .container {
+          flex-wrap: wrap;
+        }
+        .column {
+          flex: 1 1 calc(100% - 40px);
+          margin-bottom: 20px;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="column">
       Ephemeral/Other<br />
+      <ul><a href="ephem-channel-dev-pre-release.html">Channel widget - dev pre-release</a></ul>
       <ul><a href="ephem-tst-channel-widget.html">Channel widget</a></ul>
       <ul><a href="ephem-tst-channel-widget-dev-10285.html">DEV-10285 - Countdown fix</a></ul>
       <ul><a href="ephem-tst-channel-widget-search-fix.html">Search fix</a></ul>
       <ul><a href="ephem-tst-channel-widget-pubnub-currentlyLive.html">Channel widget - pubnub currentlyLive</a></ul>
       <ul><a href="ephem-tst-video-widget-single.html">Video widget (single)</a></ul>
-      <ul><a href="ephem-tst-video-widget-multiple.html">Video widget (multiple)</a></ul>  
+      <ul><a href="ephem-tst-video-widget-multiple.html">Video widget (multiple)</a></ul>
       </div>
       <div class="column">
       TST<br />
@@ -87,25 +77,14 @@
       <div class="column">
       STG<br />
       <ul><a href="stg-channel-widget.html">Channel widget</a></ul>
+      <ul><a href="stg-petes-widget.html">Pete's widget</a></ul>
       </div>
       <div class="column">
       Production<br />
       <ul><a href="prod-petes-widget.html">Pete's widget</a></ul>
-      <ul><a href="prod-petes-widget2.html">Pete's widget #2</a></ul>
       <ul><a href="prod-martins-widget.html">Martin's widget #2</a></ul>
       <ul><a href="prod-wsx-widget.html">WSX widget #2</a></ul>
       </div>
     </div>
-    <style>
-      @media (max-width: 768px) {
-      .container {
-        flex-wrap: wrap;
-      }
-      .column {
-        flex: 1 1 calc(100% - 40px); /* Adjust width for spacing */
-        margin-bottom: 20px;
-      }
-      }
-    </style>
   </body>
 </html>
