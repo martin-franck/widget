@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -12,7 +12,9 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -22,7 +24,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         padding: 20px 40px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
 
       header h1 {
@@ -48,7 +50,7 @@
         background: white;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
 
       footer {
@@ -83,17 +85,10 @@
     <main>
       <div class="widget-container">
         <!-- WIDGET -->
-        <iframe
-          id="recast-widget-0064db6d-d0d6-121c-fbaa-77e632f21a94"
-          src="https://embedded.recast.tv/8eml8/0064db6d-d0d6-121c-fbaa-77e632f21a94"
-          width="100%"
-          allow="fullscreen;encrypted-media;picture-in-picture;"
-          style="border: none; overflow: hidden"
-        ></iframe>
         <script
-          defer
-          src="https://embedded.recast.tv/iframe/resizer.js"
-          iframe-id="recast-widget-0064db6d-d0d6-121c-fbaa-77e632f21a94"
+          src="https://embedded.recast.tv/recastpay.js"
+          data-brand-id="8eml8"
+          data-widget-id="0064db6d-d0d6-121c-fbaa-77e632f21a94"
         ></script>
       </div>
     </main>
@@ -102,8 +97,7 @@
     <footer>
       <p>&copy; 2024 Pete's Widget. All rights reserved.</p>
       <p>
-        <a href="#">Privacy Policy</a> | 
-        <a href="#">Terms of Service</a> | 
+        <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> |
         <a href="#">Contact</a>
       </p>
     </footer>
