@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSX × RecastPay — Click-through</title>
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;}
+  .proto-banner{background:#1c1c1c;border-bottom:1px solid #333;color:#ddd;font-size:12px;padding:8px 16px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;gap:12px;flex-wrap:wrap;}
+  .proto-banner b{color:#e8ff3e;}
+  .proto-controls{display:flex;gap:8px;align-items:center;}
+  .proto-btn{background:transparent;border:1px solid #444;color:#ddd;border-radius:6px;padding:5px 12px;font-size:11.5px;cursor:pointer;}
+  .proto-btn:hover{border-color:#e8ff3e;color:#e8ff3e;}
+  .proto-btn:disabled{opacity:.35;cursor:default;}
+  .proto-btn:disabled:hover{border-color:#444;color:#ddd;}
+  .step-dots{display:flex;gap:5px;}
+  .step-dot{width:6px;height:6px;border-radius:50%;background:#444;}
+  .step-dot.active{background:#e8ff3e;}
+
+  .stage{display:flex;justify-content:center;padding:26px 16px 60px;}
+  .frame{position:relative;max-width:1000px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.6);margin:0 auto;}
+  .frame.wide-frame{max-width:1500px;}
+  .frame img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;}
+
+  .hotspot{position:absolute;cursor:pointer;border-radius:8px;
+    background:rgba(111,232,204,0);border:2px solid rgba(111,232,204,0);transition:background .15s,border-color .15s;}
+  .hotspot:hover{background:rgba(111,232,204,.16);border-color:rgba(111,232,204,.85);}
+  .hint{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);background:#1c1c1c;color:#e8ff3e;
+    font-size:11px;padding:5px 10px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;}
+  .hotspot:hover .hint{opacity:1;}
+  .end-note{text-align:center;color:#999;font-size:12.5px;margin-top:16px;max-width:600px;margin-left:auto;margin-right:auto;line-height:1.6;}
+
+  .page{max-width:1000px;width:100%;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.6);background:#0a0a0a;}
+  .page img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;}
+
+  .hero-row{width:100%;aspect-ratio:980/258;display:flex;position:relative;}
+  .hero-gutter{flex:0 0 13.673%;height:100%;background-image:url(gutter.png);background-size:100% 100%;}
+  .hero-viewport{flex:1 1 auto;height:100%;position:relative;overflow:hidden;touch-action:pan-y;cursor:grab;background:#0a0a0a;}
+  .hero-viewport.dragging{cursor:grabbing;}
+  .hero-track{position:absolute;top:0;left:0;height:100%;display:flex;align-items:stretch;}
+  .hero-slide{position:relative;height:100%;flex:0 0 auto;margin-right:var(--gap,16px);}
+  .hero-slide img{height:100%;width:100%;display:block;object-fit:cover;}
+
+  .dots-row{display:flex;justify-content:center;gap:8px;padding:14px 0;background:#0a0a0a;}
+  .dot{width:7px;height:7px;border-radius:50%;background:#3a3a3a;border:none;padding:0;cursor:pointer;}
+  .dot.active{background:#e8ff3e;width:20px;border-radius:5px;transition:all .25s;}
+</style>
+</head>
+<body>
+
+<div class="proto-banner">
+  <div>Click-through prototype — <b>WSX × RecastPay</b> — real screenshots, swipeable hero carousel. Drag the hero left/right, or click a dot / the highlighted button.</div>
+  <div class="proto-controls">
+    <button class="proto-btn" id="backBtn">← Back</button>
+    <div class="step-dots" id="stepDots"></div>
+    <button class="proto-btn" id="restartBtn">Restart</button>
+  </div>
+</div>
+
+<div class="stage" id="stage"></div>
+<div class="end-note" id="endNote" style="display:none;"></div>
+
+<script>
+(function(){
+  var flowSteps = [
+    { img:'step02.png', hotspot:{left:50,   top:43.4, width:14,  height:3.3}, label:'Login to RecastPay' },
+    { img:'step03.png', hotspot:{left:30,   top:32.3, width:38,  height:3.4}, label:'Login' },
+    { img:'step04.png', hotspot:{left:30.5, top:33.0, width:38.5,height:3.8}, label:'Buy Recast Credits' },
+    { img:'step05.png', hotspot:{left:30.5, top:33.2, width:38.5,height:3.8}, label:'Top up now!' },
+    { img:'step06.png', hotspot:{left:30.5, top:26.4, width:38.5,height:3.8}, label:'Credit card' },
+    { img:'step07.png', hotspot:{left:30.5, top:34.5, width:38.5,height:3.8}, label:'Complete transaction' },
+    { img:'step08.png', hotspot:{left:30.5, top:30.5, width:38.5,height:3.8}, label:'Purchase now for 2857 Credits' },
+    { img:'step09.png', hotspot:{left:30.5, top:38.2, width:38.5,height:3.8}, label:'Access now' }
+  ];
+
+  var cardImgs = ['card1.png','card2.png'];
+  var purchaseHotspot = { left:51, top:60, width:31, height:12 }; // relative to card1 slide only
+
+  var mode = 'home';
+  var heroIdx = 0;
+  var flowIdx = 0;
+  var drag = {active:false,startX:0,deltaX:0,moved:false};
+
+  var stage = document.getElementById('stage');
+  var PEEK_RATIO = 0.0985;
+  var SLIDE_RATIO = 0.8031;
+  var GAP_RATIO = 0.0186;
+
+  function buildHomeDOM(){
+    stage.innerHTML =
+      '<div class="page">'+
+        '<img src="page-top.png">'+
+        '<div class="hero-row">'+
+          '<div class="hero-gutter"></div>'+
+          '<div class="hero-viewport" id="heroViewport">'+
+            '<div class="hero-track" id="heroTrack">'+
+              '<div class="hero-slide" id="slide0"><img src="card1.png"></div>'+
+              '<div class="hero-slide" id="slide1"><img src="card2.png"></div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="dots-row" id="dotsRow"></div>'+
+        '<img src="page-bottom.png">'+
+      '</div>';
+  }
+
+  function buildFrameDOM(wide){
+    stage.innerHTML = '<div class="frame'+(wide?' wide-frame':'')+'" id="frame"><img id="stepImg" src=""></div>';
+  }
+
+  var PIN_OFFSET = 54; // keeps the popup/button pinned this many px below the sticky banner, every step
+  function pinFrameScroll(){
+    requestAnimationFrame(function(){
+      var frame = document.getElementById('frame');
+      if(!frame) return;
+      var rect = frame.getBoundingClientRect();
+      var delta = rect.top - PIN_OFFSET;
+      window.scrollBy(0, delta);
+    });
+  }
+
+  function layoutHero(animate){
+    var viewport = document.getElementById('heroViewport');
+    var track = document.getElementById('heroTrack');
+    if(!viewport || !track) return;
+    var vw = viewport.getBoundingClientRect().width;
+    var peek = vw*PEEK_RATIO;
+    var gap = vw*GAP_RATIO;
+    var slideWidth = vw*SLIDE_RATIO;
+    document.querySelectorAll('.hero-slide').forEach(function(el){ el.style.width = slideWidth+'px'; el.style.marginRight = gap+'px'; });
+    var translate = peek - heroIdx*(slideWidth+gap);
+    track.style.transition = animate ? 'transform .4s cubic-bezier(.22,.61,.36,1)' : 'none';
+    track.style.transform = 'translateX('+translate+'px)';
+  }
+
+  function renderHome(){
+    buildHomeDOM();
+    layoutHero(false);
+    window.scrollTo(0,0);
+
+    var slide0 = document.getElementById('slide0');
+    var p = document.createElement('div');
+    p.className = 'hotspot';
+    p.style.left = purchaseHotspot.left+'%'; p.style.top = purchaseHotspot.top+'%';
+    p.style.width = purchaseHotspot.width+'%'; p.style.height = purchaseHotspot.height+'%';
+    p.innerHTML = '<span class="hint">Purchase Bundle</span>';
+    p.onclick = function(){ if(drag.moved) return; mode='flow'; flowIdx=0; render(); };
+    slide0.appendChild(p);
+
+    var dotsRow = document.getElementById('dotsRow');
+    dotsRow.innerHTML = '';
+    cardImgs.forEach(function(_, i){
+      var d = document.createElement('button');
+      d.className = 'dot'+(i===heroIdx?' active':'');
+      d.onclick = function(){ heroIdx = i; layoutHero(true); updateDots(); updateTopControls(); };
+      dotsRow.appendChild(d);
+    });
+
+    wireDrag(document.getElementById('heroViewport'));
+    window.onresize = function(){ if(mode==='home') layoutHero(false); };
+    document.getElementById('endNote').style.display = 'none';
+  }
+
+  function updateDots(){
+    var dotsRow = document.getElementById('dotsRow');
+    if(!dotsRow) return;
+    Array.prototype.forEach.call(dotsRow.children, function(d,i){
+      d.className = 'dot'+(i===heroIdx?' active':'');
+    });
+  }
+
+  function wireDrag(viewport){
+    var track = document.getElementById('heroTrack');
+    drag = {active:false,startX:0,deltaX:0,moved:false};
+    function baseTranslate(){
+      var vw = viewport.getBoundingClientRect().width;
+      var peek = vw*PEEK_RATIO, gap = vw*GAP_RATIO, slideWidth = vw*SLIDE_RATIO;
+      return peek - heroIdx*(slideWidth+gap);
+    }
+    function down(x){ drag.active=true; drag.startX=x; drag.deltaX=0; drag.moved=false;
+      track.style.transition='none'; viewport.classList.add('dragging'); }
+    function move(x){
+      if(!drag.active) return;
+      drag.deltaX = x - drag.startX;
+      if(Math.abs(drag.deltaX)>6) drag.moved=true;
+      track.style.transform = 'translateX('+(baseTranslate()+drag.deltaX)+'px)';
+    }
+    function up(){
+      if(!drag.active) return;
+      drag.active=false; viewport.classList.remove('dragging');
+      var vw = viewport.getBoundingClientRect().width;
+      var threshold = vw*0.12;
+      if(drag.deltaX < -threshold) heroIdx = Math.min(cardImgs.length-1, heroIdx+1);
+      else if(drag.deltaX > threshold) heroIdx = Math.max(0, heroIdx-1);
+      layoutHero(true);
+      updateDots(); updateTopControls();
+      setTimeout(function(){ drag.moved=false; }, 50);
+    }
+    viewport.addEventListener('mousedown', function(e){ down(e.clientX); });
+    window.addEventListener('mousemove', function(e){ move(e.clientX); });
+    window.addEventListener('mouseup', up);
+    viewport.addEventListener('touchstart', function(e){ down(e.touches[0].clientX); }, {passive:true});
+    viewport.addEventListener('touchmove', function(e){ move(e.touches[0].clientX); }, {passive:true});
+    viewport.addEventListener('touchend', up);
+  }
+
+  function renderFlow(){
+    buildFrameDOM(false);
+    var frame = document.getElementById('frame');
+    var img = document.getElementById('stepImg');
+    var s = flowSteps[flowIdx];
+    img.src = s.img;
+    var h = document.createElement('div');
+    h.className = 'hotspot';
+    h.style.left = s.hotspot.left+'%'; h.style.top = s.hotspot.top+'%';
+    h.style.width = s.hotspot.width+'%'; h.style.height = s.hotspot.height+'%';
+    h.innerHTML = '<span class="hint">'+s.label+'</span>';
+    h.onclick = function(){
+      if(flowIdx < flowSteps.length-1){ flowIdx++; } else { mode='end'; }
+      render();
+    };
+    frame.appendChild(h);
+    document.getElementById('endNote').style.display = 'none';
+    pinFrameScroll();
+  }
+
+  function renderEnd(){
+    buildFrameDOM(true);
+    document.getElementById('stepImg').src = 'step10.png';
+    var note = document.getElementById('endNote');
+    note.style.display = 'block';
+    note.textContent = 'End state: Season Pass purchased — British GP Kickstart is now pre-ordered, with a live countdown to the round. Hit Restart to run through the journey again.';
+    pinFrameScroll();
+  }
+
+  function render(){
+    if(mode==='home') renderHome();
+    else if(mode==='flow') renderFlow();
+    else renderEnd();
+    updateTopControls();
+  }
+
+  function updateTopControls(){
+    document.getElementById('backBtn').disabled = (mode==='home' && heroIdx===0);
+    var n = 1 + flowSteps.length + 1;
+    var activeIdx = mode==='home' ? 0 : (mode==='flow' ? 1+flowIdx : n-1);
+    var dotsWrap = document.getElementById('stepDots');
+    dotsWrap.innerHTML = '';
+    for(var i=0;i<n;i++){
+      var d = document.createElement('span');
+      d.className = 'step-dot'+(i===activeIdx?' active':'');
+      dotsWrap.appendChild(d);
+    }
+  }
+
+  document.getElementById('backBtn').onclick = function(){
+    if(mode==='end'){ mode='flow'; flowIdx = flowSteps.length-1; }
+    else if(mode==='flow'){ if(flowIdx>0){ flowIdx--; } else { mode='home'; } }
+    else if(mode==='home'){ if(heroIdx>0){ heroIdx--; } }
+    render();
+  };
+  document.getElementById('restartBtn').onclick = function(){
+    mode='home'; heroIdx=0; flowIdx=0; render();
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
