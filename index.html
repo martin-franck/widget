@@ -37,6 +37,27 @@
       .column br {
         margin-bottom: 40px; /* Further increase spacing between headings and options */
       }
+      .ephemeral {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .ephemeral-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        list-style: none;
+        margin: 10px 0 0;
+        padding: 0;
+      }
+      .ephemeral-list li {
+        border: 1px solid #dde6f0;
+        border-radius: 6px;
+        padding: 8px 14px;
+      }
       a {
         color: #007bff;
         text-decoration: none;
@@ -57,25 +78,29 @@
     </style>
   </head>
   <body>
+    <div class="ephemeral">
+      Ephemeral/Other <small>(newest first)</small>
+      <ul class="ephemeral-list">
+        <li><a href="ephem-channel-widget-11665.html">DEV-11665</a></li>
+        <li>
+          <a href="ephem-channel-widget-geometry-11610.html"
+            >Geometry - DEV-11610</a
+          >
+        </li>
+        <li><a href="ephem-channel-widget-img-fix.html">IMG fix - DEV-11679</a></li>
+        <li>
+          <a href="ephem-channel-widget-safari-popup-11823.html"
+            >Safari Popup - DEV-11823</a
+          >
+        </li>
+        <li>
+          <a href="ephem-channel-widget-remove-pubnub-11762.html"
+            >Remove Pubnub - DEV-11762</a
+          >
+        </li>
+      </ul>
+    </div>
     <div class="container">
-      <div class="column">
-        Ephemeral/Other<br />
-        <ul>
-          <a href="ephem-channel-widget-11665.html">DEV-11665</a>
-        </ul>
-        <ul>
-          <a href="ephem-channel-widget-geometry-11610.html">Geometry - DEV-11610</a>
-        </ul>
-        <ul>
-          <a href="ephem-channel-widget-img-fix.html">IMG fix - DEV-11679</a>
-        </ul>
-        <ul>
-          <a href="ephem-channel-widget-safari-popup-11823.html">Safari Popup - DEV-11823</a>
-        </ul>
-        <ul>
-          <a href="ephem-channel-widget-remove-pubnub-11762.html">Remove Pubnub - DEV-11762</a>
-        </ul>
-      </div>
       <div class="column">
         TST<br />
         <ul>
